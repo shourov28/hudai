@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Bookings</h2>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Game</th>
+      <th>Duration</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for booking in bookings %}
+    <tr>
+      <td>{{ booking.game.name }}</td>
+      <td>{{ booking.get_duration_display }}</td>
+      <td>{{ booking.start_time }}</td>
+      <td>{{ booking.end_time }}</td>
+      <td>
+        {% if booking.is_active %}
+          <span class="badge bg-success">Active</span>
+        {% else %}
+          <span class="badge bg-secondary">Expired</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

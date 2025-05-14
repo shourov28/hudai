@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Payment Confirmed</h2>
+<p>Thank you for booking <strong>{{ booking.game.name }}</strong>.</p>
+<p>Booking Duration: {{ booking.get_duration_display }}</p>
+<p>Total Paid: {{ booking.price }} Tk</p>
+<a href="{% url 'my_bookings' %}" class="btn btn-primary">Go to My Bookings</a>
+{% endblock %}

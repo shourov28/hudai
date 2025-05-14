@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Available Games</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+
+    {% for game in games %}
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        {% if game.image %}
+        <img src="{{ game.image.url }}" class="card-img-top" alt="{{ game.title }}">
+        {% else %}
+        <img src="{% static 'default_game.jpg' %}" class="card-img-top" alt="No image available">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ game.title }}</h5>
+          <p class="card-text text-muted">{{ game.get_category_display }}</p>
+          <p class="card-text">{{ game.description|truncatewords:20 }}</p>
+        </div>
+        <div class="card-footer text-center bg-white border-top-0">
+          {% if user.is_authenticated %}
+          <a href="{% url 'book_game' game.id %}" class="btn btn-primary w-100">Book Now</a>
+          {% else %}
+          <a href="{% url 'login' %}?next={% url 'book_game' game.id %}" class="btn btn-outline-primary w-100">Log in to Book</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col">
+      <p>No games available at the moment.</p>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}

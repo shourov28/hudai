@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2>Book {{ game.title }}</h2>
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="duration" class="form-label">Select Duration</label>
+      <select class="form-select" name="duration" required>
+        <option value="20M">20 Minutes</option>
+        <option value="1H">1 Hour</option>
+        <option value="2H">2 Hours</option>
+        <option value="3H">3 Hours</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="mode" class="form-label">Select Mode</label>
+      <select class="form-select" name="mode" required>
+        <option value="single">Single Player</option>
+        <option value="multi">Multiplayer</option>
+        <option value="story">Story Mode</option>
+      </select>
+    </div>
+
+     <!-- New start time selector -->
+  <label for="start_time">Select Start Date & Time:</label>
+  <input type="datetime-local" name="start_time" required>
+
+    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+  </form>
+</div>
+{% endblock %}
