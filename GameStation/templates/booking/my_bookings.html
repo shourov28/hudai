@@ -15,7 +15,7 @@
   <tbody>
     {% for booking in bookings %}
     <tr>
-      <td>{{ booking.game.name }}</td>
+      <td>{{ booking.game.title }}</td>
       <td>{{ booking.get_duration_display }}</td>
       <td>{{ booking.start_time }}</td>
       <td>{{ booking.end_time }}</td>
