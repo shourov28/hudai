@@ -1,33 +1,186 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>My Bookings</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Bookings - Game Station</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent-color: #76b900;
+      --light-color: #ffffff;
+      --dark-color: #000000;
+    }
 
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>Game</th>
-      <th>Duration</th>
-      <th>Start</th>
-      <th>End</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for booking in bookings %}
-    <tr>
-      <td>{{ booking.game.title }}</td>
-      <td>{{ booking.get_duration_display }}</td>
-      <td>{{ booking.start_time }}</td>
-      <td>{{ booking.end_time }}</td>
-      <td>
-        {% if booking.is_active %}
-          <span class="badge bg-success">Active</span>
+    body {
+      background-color: #0f0f0f;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--light-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: transparent !important;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--light-color);
+    }
+
+    .nav-link {
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+      color: var(--light-color);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .nav-link:hover {
+      color: var(--accent-color) !important;
+    }
+
+    .bookings-wrapper {
+      padding: 2rem 1rem;
+      flex: 1;
+    }
+
+    .booking-card {
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(118, 185, 0, 0.2);
+      transition: transform 0.2s;
+      color: var(--light-color);
+    }
+
+    .booking-card:hover {
+      transform: scale(1.01);
+    }
+
+    .booking-title {
+      color: var(--accent-color);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .booking-detail {
+      font-size: 0.95rem;
+      margin: 0.3rem 0;
+      color: var(--light-color);
+    }
+
+    .badge-status {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .text-muted {
+      color: #ccc !important; /* Override Bootstrap muted text to light grey */
+    }
+
+    h2, p, label, .form-label, .text-center, strong {
+      color: var(--light-color) !important;
+    }
+
+    footer {
+      background-color: var(--dark-color);
+      color: var(--light-color);
+      text-align: center;
+      padding: 1rem 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    footer a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #94d400;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark px-3">
+    <a class="navbar-brand" href="/">GAME STATION</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center text-white me-2">
+            Welcome, {{ user.username }}
+          </li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'my_bookings' %}">MY BOOKINGS</a></li>
+          {% if user.is_staff %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'admin_summary' %}">ADMIN Summary</a></li>
+          {% endif %}
+          <li class="nav-item">
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link" style="text-decoration: none; color: white;">LOGOUT</button>
+            </form>
+          </li>
         {% else %}
-          <span class="badge bg-secondary">Expired</span>
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">LOGIN</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">SIGN UP</a></li>
         {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% endblock %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Bookings Content -->
+  <div class="container bookings-wrapper">
+    <h2 class="text-center mb-4">My Bookings</h2>
+
+    {% if bookings %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for booking in bookings %}
+      <div class="col">
+        <div class="booking-card h-100">
+          <div class="booking-title">{{ booking.game.title }}</div>
+          <div class="booking-detail"><strong>Duration:</strong> {{ booking.get_duration_display }}</div>
+          <div class="booking-detail"><strong>Start:</strong> {{ booking.start_time }}</div>
+          <div class="booking-detail"><strong>End:</strong> {{ booking.end_time }}</div>
+          <div class="booking-detail">
+            <strong>Status:</strong>
+            {% if booking.is_active %}
+              <span class="badge bg-success badge-status">Active</span>
+            {% else %}
+              <span class="badge bg-secondary badge-status">Expired</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p class="text-center text-muted mt-5">You don't have any bookings yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p class="mb-0">&copy; 2025 GAME STATION |
+        Developed by <a href="https://github.com/iamsadattt">Sadat</a> &amp;
+        <a href="https://github.com/shourov28">Shourov</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

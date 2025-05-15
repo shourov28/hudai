@@ -16,8 +16,8 @@
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">{{ game.title }}</h5>
-          <p class="card-text text-muted">{{ game.get_category_display }}</p>
-          <p class="card-text">{{ game.description|truncatewords:20 }}</p>
+          <p class="card-text">{{ game.get_category_display }}</p>
+          <p class="card-text text-muted">{{ game.description|truncatewords:20 }}</p>
         </div>
         <div class="card-footer text-center bg-white border-top-0">
           {% if user.is_authenticated %}

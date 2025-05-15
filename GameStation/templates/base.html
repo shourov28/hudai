@@ -10,29 +10,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #0f1923;
-      --secondary-color: #1a2a3a;
       --accent-color: #76b900;
       --light-color: #ffffff;
-      --dark-color: #0a121a;
+      --dark-color: #000000;
     }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      line-height: 1.6;
+      background-color: var(--dark-color);
       color: var(--light-color);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background:
-        linear-gradient(rgba(15, 25, 35, 0.9), rgba(15, 25, 35, 0.9)),
-        url('/media/background.jpg') center/cover no-repeat fixed;
+      margin: 0;
     }
 
     .navbar {
       background-color: transparent !important;
       padding: 1rem 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
     }
 
     .navbar-brand {
@@ -56,27 +52,67 @@
       color: var(--accent-color) !important;
     }
 
-    .container {
-      flex: 1;
-      max-width: 1200px;
-      padding: 3rem 2rem;
-      background-color: transparent;
+    .hero-section {
+      background: url('/media/background.jpg') center/contain no-repeat;
+      background-color: #000;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      text-align: center;
+      padding-top: 5rem;
     }
 
-    .alert {
-      border-radius: 4px;
-      border-left: 4px solid;
-      background-color: rgba(255,255,255,0.1);
+    .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: white;
+        margin-top: 2rem;
+        margin-bottom: 0;
     }
 
-    .btn-link {
-      text-decoration: none;
-      color: var(--light-color);
+
+    .scrolling-games {
+      overflow: hidden;
+      white-space: nowrap;
+        height: 700px;
+      background-color: #0b0b0b;
+      padding: 0rem 0;
     }
 
-    .btn-link:hover {
-      color: var(--accent-color);
-      text-decoration: none;
+    .scrolling-games .card {
+        display: inline-block;
+        vertical-align: top;
+        height: 600px;
+        width: 300px; /* smaller width */
+        margin-right: 1.5rem;
+        padding: 0.5rem;
+        background-color: #222; /* dark card background */
+        color: var(--light-color); /* light text */
+        font-weight: 500;
+        animation: scrollLeft 5s linear infinite;
+}
+
+    .scrolling-games .card-title {
+        font-size: 1.5rem;
+        color: var(--light-color);
+        margin-bottom: 0.5rem;
+    }
+    .scrolling-games .card-text {
+        font-size: 0.9rem;
+        color: #ccc;
+        line-height: 1.4;
+    }
+
+    @keyframes scrollLeft {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
     }
 
     footer {
@@ -98,140 +134,11 @@
       color: #94d400;
       text-decoration: underline;
     }
-
-    .btn-primary {
-      background-color: var(--accent-color);
-      border: none;
-      padding: 0.75rem 2rem;
-      border-radius: 4px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--dark-color);
-      transition: all 0.3s;
-    }
-
-    .btn-primary:hover {
-      background-color: #94d400;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(118, 185, 0, 0.3);
-    }
-
-    .hero {
-      text-align: center;
-      padding: 6rem 0;
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .hero h2 {
-      font-size: 1.5rem;
-      font-weight: 400;
-      margin-bottom: 2.5rem;
-      opacity: 0.9;
-    }
-
-    .form-control {
-      border-radius: 4px;
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 0.75rem 1rem;
-      background-color: rgba(255,255,255,0.05);
-      color: var(--light-color);
-    }
-
-    .form-control:focus {
-      box-shadow: 0 0 0 0.25rem rgba(118, 185, 0, 0.25);
-      border-color: var(--accent-color);
-      background-color: rgba(255,255,255,0.1);
-    }
-
-    /* Game Carousel Styles */
-    .games-carousel {
-      width: 100%;
-      height: 500px;
-      position: relative;
-      overflow: hidden;
-      margin: 3rem 0;
-      border-radius: 8px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    }
-
-    .game-slide {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      opacity: 0;
-      transition: opacity 1.5s ease-in-out;
-      display: flex;
-      align-items: flex-end;
-    }
-
-    .game-slide.active {
-      opacity: 1;
-    }
-
-    .game-info {
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      padding: 2rem;
-      width: 100%;
-      color: white;
-    }
-
-    .game-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    .game-genre {
-      color: var(--accent-color);
-      font-weight: 600;
-      margin-bottom: 1rem;
-      display: inline-block;
-    }
-
-    .game-description {
-      max-width: 600px;
-      line-height: 1.7;
-    }
-
-    .carousel-dots {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      z-index: 10;
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      margin: 0 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .dot.active {
-      background: var(--accent-color);
-    }
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark px-3">
-      <a class="navbar-brand" href="/">GAME STATION <br> <p style="font-size: 14px">Play to Your Ultimate Potential</p></a>
-
+    <a class="navbar-brand" href="/">GAME STATION</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -243,12 +150,12 @@
           </li>
           <li class="nav-item"><a class="nav-link" href="{% url 'my_bookings' %}">MY BOOKINGS</a></li>
           {% if user.is_staff %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'admin_summary' %}">ADMIN</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'admin_summary' %}">ADMIN Summary</a></li>
           {% endif %}
           <li class="nav-item">
             <form action="{% url 'logout' %}" method="post" class="d-inline">
               {% csrf_token %}
-              <button type="submit" class="nav-link btn btn-link" style="text-decoration: none;">LOGOUT</button>
+              <button type="submit" class="nav-link btn btn-link" style="text-decoration: none; color: white;">LOGOUT</button>
             </form>
           </li>
         {% else %}
@@ -259,64 +166,12 @@
     </div>
   </nav>
 
-  <div class="container mt-4">
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-
-
-    <!-- Game Carousel Section -->
-    <div class="games-carousel">
-      <!-- Slide 1 -->
-      <div class="game-slide active" style="background-image: url('/media/games/cyberpunk.jpg')">
-        <div class="game-info">
-          <h3 class="game-title">Cyberpunk 2077</h3>
-          <span class="game-genre">RPG • Action • Open World</span>
-          <p class="game-description">Explore Night City, a megalopolis obsessed with power and body modification. Become a cyberpunk and change the course of the city's future.</p>
-        </div>
-      </div>
-
-      <!-- Slide 2 -->
-      <div class="game-slide" style="background-image: url('/media/games/valorant.jpg')">
-        <div class="game-info">
-          <h3 class="game-title">Valorant</h3>
-          <span class="game-genre">FPS • Tactical Shooter</span>
-          <p class="game-description">Blend your style and experience in a competitive 5v5 character-based tactical shooter. Precise gunplay meets unique agent abilities.</p>
-        </div>
-      </div>
-
-      <!-- Slide 3 -->
-      <div class="game-slide" style="background-image: url('/media/games/elden-ring.jpg')">
-        <div class="game-info">
-          <h3 class="game-title">Elden Ring</h3>
-          <span class="game-genre">Action RPG • Soulslike</span>
-          <p class="game-description">Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between.</p>
-        </div>
-      </div>
-
-      <!-- Slide 4 -->
-      <div class="game-slide" style="background-image: url('/media/games/fortnite.jpg')">
-        <div class="game-info">
-          <h3 class="game-title">Fortnite</h3>
-          <span class="game-genre">Battle Royale • Shooter</span>
-          <p class="game-description">Battle it out to be the last one standing in this ever-evolving online playground. Build, shoot, and survive in this global phenomenon.</p>
-        </div>
-      </div>
-
-      <!-- Navigation Dots -->
-      <div class="carousel-dots">
-        <div class="dot active" data-slide="0"></div>
-        <div class="dot" data-slide="1"></div>
-        <div class="dot" data-slide="2"></div>
-        <div class="dot" data-slide="3"></div>
-      </div>
-    </div>
-
-    {% block content %}{% endblock %}
+  <div class="hero-section">
+    <h1>Experience the Future of Gaming</h1>
   </div>
-
+<div class="scrolling-games">
+  {% block content %}{% endblock %}
+</div>
   <footer>
     <div class="container">
       <p class="mb-1">&copy; 2025 GAME STATION |
@@ -328,51 +183,5 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Game Carousel Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const slides = document.querySelectorAll('.game-slide');
-      const dots = document.querySelectorAll('.dot');
-      let currentSlide = 0;
-      let slideInterval;
-
-      // Function to change slide
-      function goToSlide(n) {
-        slides[currentSlide].classList.remove('active');
-        dots[currentSlide].classList.remove('active');
-        currentSlide = (n + slides.length) % slides.length;
-        slides[currentSlide].classList.add('active');
-        dots[currentSlide].classList.add('active');
-      }
-
-      // Function for next slide
-      function nextSlide() {
-        goToSlide(currentSlide + 1);
-      }
-
-      // Start auto sliding
-      function startSlideShow() {
-        slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
-      }
-
-      // Pause on hover
-      const carousel = document.querySelector('.games-carousel');
-      carousel.addEventListener('mouseenter', () => clearInterval(slideInterval));
-      carousel.addEventListener('mouseleave', startSlideShow);
-
-      // Dot click event
-      dots.forEach(dot => {
-        dot.addEventListener('click', function() {
-          clearInterval(slideInterval);
-          goToSlide(parseInt(this.getAttribute('data-slide')));
-          startSlideShow();
-        });
-      });
-
-      // Initialize
-      startSlideShow();
-    });
-  </script>
 </body>
 </html>

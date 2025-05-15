@@ -1,34 +1,234 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Daily Admin Summary</h2>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Summary - Game Station</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent-color: #76b900;
+      --light-color: #fff;
+      --dark-bg: #121212;
+      --card-bg: #1a1a1a;
+      --border-color: #2a2a2a;
+    }
 
-<p><strong>Total Income Today:</strong> <span class="text-success">{{ income }} Tk</span></p>
+    body {
+      background: linear-gradient(135deg, #000, #0f0f0f);
+      color: var(--light-color);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-<h4>Today's Bookings:</h4>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Game</th>
-      <th>Duration</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for booking in users %}
-    <tr>
-      <td>{{ booking.user.username }}</td>
-      <td>{{ booking.game.title }}</td>
-      <td>{{ booking.get_duration_display }}</td>
-      <td>{{ booking.start_time|date:"Y-m-d H:i" }}</td>
-      <td>{{ booking.end_time|date:"Y-m-d H:i" }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="5">No bookings today.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% endblock %}
+    .navbar {
+      background-color: transparent !important;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 2rem;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--light-color);
+      letter-spacing: 1px;
+    }
+
+    .nav-link {
+      color: var(--light-color);
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-link:hover {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    .logout-btn {
+      background: none;
+      border: none;
+      color: var(--light-color);
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .logout-btn:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+    }
+
+    main.container {
+      flex: 1;
+      padding: 3rem 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--accent-color);
+      letter-spacing: 1.2px;
+    }
+
+    .income {
+      font-size: 1.25rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .income span {
+      color: #4ade80; /* Tailwind green-400 */
+      font-weight: 700;
+    }
+
+    table {
+      background-color: var(--card-bg);
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(118, 185, 0, 0.3);
+    }
+
+    thead tr {
+      background-color: #2f2f2f;
+      color: var(--accent-color);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    thead th, tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    tbody tr:hover {
+      background-color: #333333;
+    }
+
+    tbody tr td {
+      font-weight: 400;
+      color: var(--light-color);
+    }
+
+    tbody tr td:first-child {
+      font-weight: 600;
+    }
+
+    tbody tr.empty-row td {
+      text-align: center;
+      font-style: italic;
+      color: #aaa;
+      font-weight: 400;
+    }
+
+    footer {
+      background-color: var(--dark-bg);
+      text-align: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: var(--light-color);
+    }
+
+    footer a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      color: #94d400;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark px-3">
+    <a class="navbar-brand" href="/">GAME STATION</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center text-white me-2">
+            Welcome, {{ user.username }}
+          </li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'my_bookings' %}">MY BOOKINGS</a></li>
+          {% if user.is_staff %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'admin_summary' %}">ADMIN Summary</a></li>
+          {% endif %}
+          <li class="nav-item">
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link" style="text-decoration: none; color: white;">LOGOUT</button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">LOGIN</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">SIGN UP</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2>Daily Admin Summary</h2>
+
+    <p class="income"><strong>Total Income Today:</strong> <span>{{ income }} Tk</span></p>
+
+    <h4 class="mb-3">Today's Bookings:</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Game</th>
+          <th>Duration</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in users %}
+        <tr>
+          <td>{{ booking.user.username }}</td>
+          <td>{{ booking.game.title }}</td>
+          <td>{{ booking.get_duration_display }}</td>
+          <td>{{ booking.start_time|date:"Y-m-d H:i" }}</td>
+          <td>{{ booking.end_time|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr class="empty-row">
+          <td colspan="5">No bookings today.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 GAME STATION | Developed by
+    <a href="https://github.com/iamsadattt" target="_blank">Sadat</a> &amp;
+    <a href="https://github.com/shourov28" target="_blank">Shourov</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

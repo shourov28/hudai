@@ -1,34 +1,205 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container">
-  <h2>Book {{ game.title }}</h2>
-  <form method="post">
-    {% csrf_token %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Book {{ game.title }} - Game Station</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent-color: #76b900;
+      --light-color: #fff;
+      --dark-bg: #121212;
+      --card-bg: #1a1a1a;
+      --border-color: #2a2a2a;
+    }
 
-    <div class="mb-3">
+    body {
+      background: linear-gradient(135deg, #000, #0f0f0f);
+      color: var(--light-color);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: transparent !important;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 2rem;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--light-color);
+      letter-spacing: 1px;
+    }
+
+    .nav-link {
+      color: var(--light-color);
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-link:hover {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    main.container {
+      flex: 1;
+      max-width: 480px;
+      margin: 3rem auto 4rem;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 0 15px rgba(118, 185, 0, 0.3);
+    }
+
+    h2 {
+      color: var(--accent-color);
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+      letter-spacing: 1.2px;
+    }
+
+    label.form-label {
+      font-weight: 600;
+      margin-top: 1rem;
+      color: var(--light-color);
+    }
+
+    select.form-select,
+    input[type="datetime-local"] {
+      background-color: #2a2a2a;
+      border: 1px solid #444;
+      color: var(--light-color);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      transition: border-color 0.3s ease;
+    }
+
+    select.form-select:focus,
+    input[type="datetime-local"]:focus {
+      border-color: var(--accent-color);
+      outline: none;
+      box-shadow: none;
+      color: var(--light-color);
+      background-color: #2a2a2a;
+    }
+
+    button.btn-primary {
+      background-color: var(--accent-color);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      margin-top: 2rem;
+      width: 100%;
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    button.btn-primary:hover {
+      background-color: #94d400;
+      color: #000;
+    }
+
+    footer {
+      background-color: var(--dark-bg);
+      text-align: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: var(--light-color);
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      color: #94d400;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark px-3">
+    <a class="navbar-brand" href="/">GAME STATION</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item d-flex align-items-center text-white me-2">
+            Welcome, {{ user.username }}
+          </li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'my_bookings' %}">MY BOOKINGS</a></li>
+          {% if user.is_staff %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'admin_summary' %}">ADMIN Summary</a></li>
+          {% endif %}
+          <li class="nav-item">
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link" style="text-decoration: none; color: white;">LOGOUT</button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">LOGIN</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">SIGN UP</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Booking Form -->
+  <main class="container">
+    <h2>Book {{ game.title }}</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+
       <label for="duration" class="form-label">Select Duration</label>
-      <select class="form-select" name="duration" required>
+      <select class="form-select" name="duration" id="duration" required>
         <option value="20M">20 Minutes</option>
         <option value="1H">1 Hour</option>
         <option value="2H">2 Hours</option>
         <option value="3H">3 Hours</option>
       </select>
-    </div>
 
-    <div class="mb-3">
       <label for="mode" class="form-label">Select Mode</label>
-      <select class="form-select" name="mode" required>
+      <select class="form-select" name="mode" id="mode" required>
         <option value="single">Single Player</option>
         <option value="multi">Multiplayer</option>
         <option value="story">Story Mode</option>
       </select>
-    </div>
 
-     <!-- New start time selector -->
-  <label for="start_time">Select Start Date & Time:</label>
-  <input type="datetime-local" name="start_time" required>
+      <label for="start_time" class="form-label">Select Start Date & Time</label>
+      <input type="datetime-local" name="start_time" id="start_time" required />
 
-    <button type="submit" class="btn btn-primary">Confirm Booking</button>
-  </form>
-</div>
-{% endblock %}
+      <button type="submit" class="btn btn-primary">Confirm Booking</button>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 GAME STATION | Developed by
+    <a href="https://github.com/iamsadattt" target="_blank" rel="noopener noreferrer">Sadat</a> &amp;
+    <a href="https://github.com/shourov28" target="_blank" rel="noopener noreferrer">Shourov</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

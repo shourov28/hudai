@@ -95,7 +95,7 @@ def book_game(request, game_id):
         Payment.objects.create(booking=booking, amount=price)
 
         messages.success(request, f"Successfully booked '{game.title}' in {mode} mode!")
-        return redirect('my_bookings')
+        return redirect('payment_confirmation', booking_id=booking.id)
 
     return render(request, 'booking/book_game.html', {'game': game})
 
