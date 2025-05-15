@@ -13,7 +13,7 @@
         {% else %}
         <img src="{% static 'default_game.jpg' %}" class="card-img-top" alt="No image available">
         {% endif %}
-        <div class="card-body"; style="background-color: blueviolet">
+        <div class="card-body"; style="background-color: #76b900">
           <h5 class="card-title"; style="color: white">{{ game.title }}</h5>
           <p class="card-text"; style="color: white">{{ game.get_category_display }}</p>
           <p class="card-text"; style="color: white">{{ game.description|truncatewords:20 }}</p>
