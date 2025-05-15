@@ -3,7 +3,6 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h2 class="mb-4 text-center">Available Games</h2>
   <div class="row row-cols-1 row-cols-md-3 g-4">
 
     {% for game in games %}
@@ -14,10 +13,10 @@
         {% else %}
         <img src="{% static 'default_game.jpg' %}" class="card-img-top" alt="No image available">
         {% endif %}
-        <div class="card-body">
-          <h5 class="card-title">{{ game.title }}</h5>
-          <p class="card-text">{{ game.get_category_display }}</p>
-          <p class="card-text">{{ game.description|truncatewords:20 }}</p>
+        <div class="card-body"; style="background-color: blueviolet">
+          <h5 class="card-title"; style="color: white">{{ game.title }}</h5>
+          <p class="card-text"; style="color: white">{{ game.get_category_display }}</p>
+          <p class="card-text"; style="color: white">{{ game.description|truncatewords:20 }}</p>
         </div>
         <div class="card-footer text-center bg-white border-top-0">
           {% if user.is_authenticated %}
